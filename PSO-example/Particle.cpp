@@ -1,11 +1,13 @@
 #ifndef M_PARTICLE
 #define M_PARTICLE
 
+#include <cstdlib>
+template <class T>
 class IParticle{
   public:
-    virtual IParticle random() = 0;
-    virtual IParticle randomVelocity() = 0;
-    virtual double evaluate() = 0;
+    static T random(){};
+    static T randomVelocity(){};
+    virtual double evaluate(){};
 };
 
 template <class T>
@@ -18,7 +20,8 @@ private:
     double value;
 public:
     Particle() : Particle(T::random()){}
-    Particle(T init) : position(init){
+    Particle(T init) {
+        position = init;
         velocity = T::randomVelocity();
         bestPosition = position;
         bestValue = position.evaluate();
@@ -32,14 +35,13 @@ public:
             bestValue = value;
             bestPosition = position;
         }
+        return bestPosition;
     }
 
-    void newVelocity(T globalBest, double w, double c1, double c2){
-        //
-      velocity =  
-        w * velocity + 
-        c1 * (rand() % 10 / 10) * (bestPosition - position) + 
-        c2 * (rand() % 10 / 10) * (globalBest - position);
+    void newVelocity(T &globalBest, double w, double c1, double c2){
+      velocity = velocity * w 
+        + (bestPosition - position) * c1 * (rand() % 10)
+        + (globalBest - position) * c2 * (rand() % 10);
     }
 };
 
